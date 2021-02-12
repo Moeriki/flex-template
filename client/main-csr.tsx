@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 
 import { App } from './app';
 
 import './index.css';
 
-ReactDOM.render(
-  <React.StrictMode>
+ReactDOM.hydrate(
+  <StrictMode>
     <App />
-  </React.StrictMode>,
+  </StrictMode>,
   document.getElementById('root'),
 );
