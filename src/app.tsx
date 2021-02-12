@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
-import logo from './logo.svg'
+import logo from './logo.svg';
 
-import './app.css'
+import './app.css';
 
 export function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <div className="app">
@@ -41,5 +41,5 @@ export function App() {
         </p>
       </header>
     </div>
-  )
+  );
 }
