@@ -32,7 +32,7 @@ export async function createServer({
 
     app.get('*', async (request, reply) => {
       const { render } = require(resolve('dist/ssr/main-ssr.js'));
-      const appHtml = await render(request.url);
+      const appHtml = await render(request.url, {});
       const html = template.replace(`<!--ssr-->`, appHtml);
       reply.code(200).type('text/html').send(html);
     });
@@ -57,7 +57,7 @@ export async function createServer({
         path.join(__dirname, '../client/main-ssr'),
       );
 
-      const appHtml = await render(url);
+      const appHtml = await render(url, {});
       const html = template.replace(`<!--ssr-->`, appHtml);
 
       reply.code(200).type('text/html').send(html);
