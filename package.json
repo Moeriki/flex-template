@@ -14,7 +14,7 @@
   "dependencies": {
     "fastify": "^3.11.0",
     "fastify-compress": "^3.4.1",
-    "fastify-static": "^3.4.0",
+    "fastify-static": "^4.0.1",
     "middie": "^5.2.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
