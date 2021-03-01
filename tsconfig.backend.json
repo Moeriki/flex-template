@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "module": "CommonJS",
-    "outDir": "dist/server/"
+    "outDir": "dist/server/",
+    "skipLibCheck": true
   },
   "include": ["./server"]
 }

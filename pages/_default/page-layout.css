@@ -1,0 +1,65 @@
+/* This CSS is common to all pages */
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #282c34;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.app-link {
+  color: #61dafb;
+}
+
+.app-logo {
+  margin: 20px 0 10px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .app-logo {
+    animation: app-logo-spin infinite 20s linear;
+  }
+}
+
+.vite-anti-flicker {
+  display: inherit !important;
+}
+
+@keyframes app-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.app-layout {
+  display: flex;
+  margin: auto;
+  max-width: 900px;
+}
+
+.app-sidebar {
+  display: flex;
+  padding: 20px;
+  flex-shrink: 0;
+  flex-direction: column;
+  line-height: 1.8em;
+}

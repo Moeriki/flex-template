@@ -1,9 +1,0 @@
-{
-  "env": {
-    "TS_NODE_COMPILER_OPTIONS": "{ \"module\": \"CommonJS\" }"
-  },
-  "exec": "ts-node server/main | pino-pretty",
-  "ext": "json,ts",
-  "ignore": ["server/**/*.spec.ts"],
-  "watch": ["server/"]
-}

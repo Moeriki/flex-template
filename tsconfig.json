@@ -16,5 +16,8 @@
     "target": "ESNext",
     "types": ["@testing-library/jest-dom", "jest", "vite/client"]
   },
-  "include": ["./client"]
+  "include": ["pages/"],
+  "ts-node": {
+    "transpileOnly": true
+  }
 }

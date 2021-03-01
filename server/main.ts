@@ -1,73 +1,50 @@
-import { readFileSync } from 'fs';
 import * as path from 'path';
 
-import fastify from 'fastify';
-import compress from 'fastify-compress';
-import serve from 'fastify-static';
-import middie from 'middie';
-import { createServer as createViteServer } from 'vite';
+import Koa from 'koa';
+import compress from 'koa-compress';
+import connect from 'koa-connect';
+import serve from 'koa-static';
+import * as vite from 'vite';
+import * as ssr from 'vite-plugin-ssr';
 
 const isTest =
   process.env.NODE_ENV === 'test' || Boolean(process.env.VITE_TEST_BUILD);
 const port = process.env.WEB_PORT ?? 3000;
 
 export async function createServer({
-  isProd = process.env.NODE_ENV === 'production',
+  isProduction = process.env.NODE_ENV === 'production',
   root = process.cwd(),
-}: { isProd?: boolean; root?: string } = {}) {
+}: { isProduction?: boolean; root?: string } = {}) {
   const resolve = (filepath: string) => path.resolve(root, filepath);
 
-  const app = fastify({ logger: true });
-  await app.register(middie);
+  const app = new Koa();
 
-  if (isProd) {
-    const template = readFileSync(resolve('dist/csr/index.html'), 'utf-8');
-
-    app.register(compress);
-    app.register(serve, {
-      index: false as any,
-      root: resolve('dist/csr/assets/'),
-      prefix: '/assets',
+  let viteDevServer: vite.ViteDevServer | undefined;
+  if (isProduction) {
+    app.use(compress());
+    app.use(serve(resolve('/dist/client')));
+  } else {
+    viteDevServer = await vite.createServer({
+      logLevel: isTest ? 'error' : 'info',
+      root,
+      server: { middlewareMode: true },
     });
-
-    app.get('*', async (request, reply) => {
-      const { render } = require(resolve('dist/ssr/main-ssr.js'));
-      const appHtml = await render(request.url, {});
-      const html = template.replace(`<!--ssr-->`, appHtml);
-      reply.code(200).type('text/html').send(html);
-    });
-
-    return { app };
+    app.use(connect(viteDevServer.middlewares));
   }
 
-  const vite = await createViteServer({
-    logLevel: isTest ? 'error' : 'info',
-    root,
-    server: { middlewareMode: true },
-  });
-  app.use(vite.middlewares);
+  const render = ssr.createRender({ isProduction, root, viteDevServer });
 
-  app.addHook('onRequest', async (req, reply) => {
-    const url = req.url;
-    try {
-      const ssrTemplate = readFileSync(path.join(root, 'index.html'), 'utf-8');
-      const template = await vite.transformIndexHtml(url, ssrTemplate);
+  app.use(serve(resolve('/public')));
 
-      const { render } = await vite.ssrLoadModule(
-        path.join(__dirname, '../client/main-ssr'),
-      );
-
-      const appHtml = await render(url, {});
-      const html = template.replace(`<!--ssr-->`, appHtml);
-
-      reply.code(200).type('text/html').send(html);
-    } catch (error) {
-      vite!.ssrFixStacktrace(error);
-      throw error;
-    }
+  app.use(async ({ request, response }) => {
+    response.set('content-type', 'text/html');
+    response.body = await render({
+      contextProps: {},
+      url: request.originalUrl,
+    });
   });
 
-  return { app, vite };
+  return { app, viteDevServer };
 }
 
 if (!isTest) {
